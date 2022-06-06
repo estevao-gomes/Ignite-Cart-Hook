@@ -26,14 +26,16 @@ const Home = (): JSX.Element => {
   const { addProduct, cart } = useCart();
 
   const cartItemsAmount = cart.reduce((sumAmount, product) => {
-    sumAmount[product.id] ? sumAmount[product.id] += 1 : sumAmount[product.id] = 1 
-    return sumAmount
+    return {
+      ...sumAmount,
+      [product.id]: product.amount
+    }
   }, {} as CartItemsAmount)
+
 
   useEffect(() => {
     async function loadProducts() {
       let response = await api.get('/products')
-      console.log(response)
       let productsList = response.data
 
       productsList = productsList.map((product: Product)=> {
@@ -42,7 +44,6 @@ const Home = (): JSX.Element => {
           priceFormatted: formatPrice(product.price)
         }
       })
-
       setProducts(productsList)
     }
     loadProducts();

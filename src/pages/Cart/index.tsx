@@ -20,7 +20,7 @@ interface Product {
 const Cart = (): JSX.Element => {
   const { cart, removeProduct, updateProductAmount } = useCart();
 
-  const cartFormatted = cart.map(product => ({
+  let cartFormatted = cart.map(product => ({
     ...product,
     priceFormatted: formatPrice(product.price),
     subTotal: formatPrice(product.price*product.amount)
@@ -28,7 +28,7 @@ const Cart = (): JSX.Element => {
   const total =
     formatPrice(
       cart.reduce((sumTotal, product) => {
-        return sumTotal + product.price
+        return sumTotal + product.price*product.amount
       }, 0)
     )
 
@@ -65,7 +65,7 @@ const Cart = (): JSX.Element => {
         <tbody>
           {cartFormatted.map((product)=>{
             return(
-              <tr data-testid="product">
+              <tr data-testid="product" key={product.id}>
                 <td>
                   <img src={product.image} alt={product.title} />
                 </td>
@@ -87,7 +87,7 @@ const Cart = (): JSX.Element => {
                       type="text"
                       data-testid="product-amount"
                       readOnly
-                      value={2}
+                      value={product.amount}
                     />
                     <button
                       type="button"
